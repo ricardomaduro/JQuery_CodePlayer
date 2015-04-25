@@ -1,0 +1,261 @@
+<!doctype html>
+<html>
+<head>
+<title>CodePlayer</title>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+
+<style>
+
+*{
+font-family: "HelveticaNeue-Light", "Helvetica Neue Light",
+"Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+margin:0;
+padding:0;
+}
+
+body, html {
+height:100%;
+width:100%;
+}
+
+#container {
+height:90%;
+}
+
+#titlebar {
+width:100%;
+background-color:#CC6600;
+border-bottom:1px solid grey;
+height:50px;
+color: white;
+padding: 10px;
+}
+
+#title {
+padding:10px 0 0 20px;
+font-weight:bold;
+float:left;
+font-size: 20px;
+}
+
+#menu {
+margin:0 auto;
+width:220px;
+padding:10px;
+}
+
+!
+#menu ul {
+border:1px solid grey;
+border-radius:5px;
+height:30px;
+}
+
+#menu li {
+float:left;
+list-style:none;
+border-right:1px solid grey;
+height:20px;
+padding:5px 10px;
+}
+
+#menu li:hover {
+background-color:white;
+color: red;
+cursor: pointer;
+}
+
+.break {
+clear:both;
+}
+
+.codecontainer {
+width:50%;
+float:left;
+position:relative;
+//border: solid 1px black;
+}
+
+.code {
+width:100%;
+height:100%;
+border-left: 1px solid grey;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+padding:10px;
+}
+
+#cssContainer, #jsContainer {
+display:none;
+}
+
+.containerTitle {
+position:absolute;
+right:5px;
+top:5px;
+background-color:#CCCFFF;
+padding:4px;
+border:1px solid grey;
+border-radius:10px;
+font-size:10px;
+}
+
+.selected {
+background-color:white !important;
+color: red;
+}
+
+#runButton {
+float:right;
+margin: 10px;	
+}
+
+#run, #clear {
+font-size:120%;
+border-radius:2px;
+padding:0 10px;
+background-color: white;
+}
+
+#resultFrame {
+width:100%;
+height:100%;
+border:0;
+border-left:1px solid grey;
+}
+
+.resultContainer {
+height:100%;
+}
+
+textarea {
+border:none;
+resize: none;
+font-family:monotype;
+font-size:100%;
+}
+
+</style>
+
+<script>
+
+
+ $(function() {
+
+	// set height of containers
+ 	var height=$( window ).height()-100;
+
+ 	$(".codecontainer").css("height",height+"px");
+ 	
+ 	// handle click on container selector
+ 	$(".selector").click(function() {
+
+		// activate the list item as selected
+ 		$( this ).toggleClass( "selected" );
+
+		// toggle the container that corresponds to this selector
+ 	 	var id=$(this).attr("name");
+ 	 	 	
+ 	 	$("#"+id+"Container").toggle();
+ 	 	
+ 	 	// calculate the width for the containers according to currently shown containers 	
+ 	 	var number = $('.codecontainer').filter(function() {
+ 			return $(this).css('display') !== 'none';
+		}).length;
+	 	 
+	 	var width=100/number;
+			
+	 	$(".codecontainer").css("width",width+"%"); 		 	
+
+ 	});
+ 	 	
+ 	// handle click on run code button
+ 	// get HTML and CSS contents to result frame html
+ 	// eval the javascript content
+ 	 	
+	$("#run").click(function() {
+ 	 	
+ 		$('#resultFrame').contents().find('html').html("<style>"+$('#css').val()+"</style>"+$("#html").val());
+ 	 	 	
+ 		document.getElementById('resultFrame').contentWindow.eval($('#js').val() );
+ 	});
+ 	
+ 	// handle clear results button click
+ 	$("#clear").click(function() {
+ 		$('#resultFrame').contents().find('html').html("");
+ 	});
+ 
+ });
+ 
+</script> 
+
+</head>
+
+<body>
+
+<div id="container">
+
+<div id="titlebar">
+
+<div id="title">CodePlayer</div>
+
+<div id="runButton">
+	<button id="clear">Clear results</button>
+	<button id="run">Run code</button>
+</div>
+
+<div id="menu">
+	<ul>
+		<li class="selector selected" name="html">HTML</li>
+		<li class="selector" name="css">CSS</li>
+		<li class="selector" name="js">JS</li>
+		<li class="selector selected" name="result" style="border-right:none">Result</li>
+	</ul>
+</div>
+</div>
+
+<div class="break"></div>
+
+<div class="codecontainer" id="htmlContainer">
+	<span class="containerTitle">HTML</span>
+	<textarea class="code" id="html">
+		<div id="test">This is a JQuery test</div>
+	</textarea>
+</div>
+
+<div class="codecontainer" id="cssContainer">
+	<span class="containerTitle">CSS</span>
+	<textarea class="code" id="css">
+		#test {
+		background:red;
+		color:white;
+		padding: 30px;
+		text-align: center;
+		}
+	</textarea>
+</div>
+
+<div class="codecontainer" id="jsContainer">
+	<span class="containerTitle">JS</span>
+	<textarea class="code" id="js"></textarea>
+</div>
+
+<div class="codecontainer" id="resultContainer">
+	<span class="containerTitle">Result</span>
+	<div class="resultContainer">
+		<iframe id="resultFrame"></iframe>
+	</div>
+</div>
+
+
+</div>
+<div style="font-size:12px; margin: 5px"><p>Created by Ricardo Maduro, during Udemy Complete Web Developer Course</p></div>
+
+</body>
+</html>
